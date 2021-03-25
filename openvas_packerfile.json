@@ -1,0 +1,105 @@
+{
+  "builders": [
+    {
+      "type": "virtualbox-iso",
+
+      "guest_os_type": "ubuntu-64",
+      "memory": 4096,
+      "name": "openvas",
+      "iso_urls": [
+        "iso/ubuntu-20.04.1-live-server-amd64.iso",
+        "https://releases.ubuntu.com/20.04/ubuntu-20.04.1-live-server-amd64.iso"
+      ],
+      "iso_checksum": "443511f6bf12402c12503733059269a2e10dec602916c0a75263e5d990f6bb93",
+
+      "http_directory": "http",
+
+      "boot_wait": "5s",
+      "boot_command": [
+        "<enter><enter><f6><esc><wait> ",
+        "autoinstall ds=nocloud-net;seedfrom=http://{{ .HTTPIP }}:{{ .HTTPPort }}/",
+        "<enter><wait>"
+      ],
+      "shutdown_command": "sudo shutdown -P now",
+
+      "ssh_username": "ubuntu",
+      "ssh_password": "8y$*a$4.xX2aDY2",
+      "ssh_pty": true,
+      "ssh_timeout": "30m",
+      "ssh_handshake_attempts": "2000"
+    }
+  ],
+
+  "provisioners": [
+	{
+            "type": "file",
+            "source": "scripts/postgres.sh",
+            "destination": "~/postgres.sh"
+    },
+	{
+            "type": "file",
+            "source": "scripts/postgres.sql",
+            "destination": "~/postgres.sql"
+    },
+	{
+            "type": "file",
+            "source": "scripts/ospd.sh",
+            "destination": "~/ospd.sh"
+    },
+		{
+            "type": "file",
+            "source": "scripts/gvmd.sh",
+            "destination": "~/gvmd.sh"
+    },
+	{
+            "type": "file",
+            "source": "scripts/git.sh",
+            "destination": "~/git.sh"
+    },
+	{
+            "type": "file",
+            "source": "scripts/git2.sh",
+            "destination": "~/git2.sh"
+    },
+	{
+            "type": "shell",
+            "inline": ["pwd"]
+     },
+	{
+            "type": "shell",
+            "inline": ["ls -ltr"]
+     },
+	 {
+            "type": "shell",
+            "inline": ["chmod +x ~/postgres.sh"]
+     },
+	 {
+            "type": "shell",
+            "inline": ["chmod +x ~/gvmd.sh"]
+     },
+	 {
+            "type": "shell",
+            "inline": ["chmod +x ~/ospd.sh"]
+     },
+	 {
+            "type": "shell",
+            "inline": ["chmod +x ~/git.sh"]
+     },
+	 {
+            "type": "shell",
+            "inline": ["chmod +x ~/git2.sh"]
+     },
+	 {
+            "type": "shell",
+            "inline": ["chmod +x ~/postgres.sql"]
+     },
+		
+  {
+      "execute_command": "echo 'ubuntu' | {{.Vars}} sudo -S -E sh -eux '{{.Path}}'",
+      "scripts": [
+        "scripts/openvas.sh"
+      ],
+      "type": "shell"
+    }
+  ]
+}

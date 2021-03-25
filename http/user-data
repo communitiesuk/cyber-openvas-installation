@@ -1,0 +1,22 @@
+#cloud-config
+autoinstall:
+  version: 1
+  locale: en_GB
+  keyboard:
+    layout: en
+    variant: gb
+
+  storage:
+    layout:
+      name: lvm
+  identity:
+    hostname: ubuntu
+    username: ubuntu
+    password: $6$rounds=4096$xK8GB63uKFtg2m$HI7JtZLz0EWKGcH4/6.z8k1vYqdKsnSgh3lOnQgeYfaPUdVqSUHzKBRVF5JqZVc4cvN7q8kTEKJa4riylzF8V/
+
+  ssh:
+    install-server: yes
+  user-data:
+    disable_root: false
+  late-commands:
+    - echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /target/etc/sudoers.d/ubuntu
